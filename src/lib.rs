@@ -9,13 +9,13 @@ use alloc::format;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 
-pub struct Cell {
+pub struct Pixel {
     red: u8,
     green: u8,
     blue: u8,
 }
 
-impl Cell {
+impl Pixel {
     pub fn red(&self) -> u8 {
         self.red
     }
@@ -57,7 +57,7 @@ pub trait SnakeProvider {
 
 pub struct SnakeGame {
     size: u32,
-    cells: Vec<Cell>,
+    cells: Vec<Pixel>,
     snake: Vec<(u32, u32)>,
     current_food: (u32, u32),
     current_direction: Direction,
@@ -70,7 +70,7 @@ impl SnakeGame {
         self.size
     }
 
-    pub fn cells(&self) -> &Vec<Cell> {
+    pub fn cells(&self) -> &Vec<Pixel> {
         &self.cells
     }
 
@@ -111,7 +111,7 @@ impl SnakeGame {
 
         // draw the food
         let index = self.get_cell_index(self.current_food.0, self.current_food.1);
-        next[index] = Cell {
+        next[index] = Pixel {
             red: 0,
             green: 255,
             blue: 0,
@@ -120,7 +120,7 @@ impl SnakeGame {
         // clear last snake segment
         let (row, column) = self.snake.last().unwrap();
         let index = self.get_cell_index(*row, *column);
-        next[index] = Cell {
+        next[index] = Pixel {
             red: 0,
             green: 0,
             blue: 0,
@@ -200,7 +200,7 @@ impl SnakeGame {
         // draw the new snake
         for (row, column) in &new_snake {
             let index = self.get_cell_index(*row, *column);
-            next[index] = Cell {
+            next[index] = Pixel {
                 red: 0,
                 green: 125,
                 blue: 255,
@@ -221,7 +221,7 @@ impl SnakeGame {
 
             self.cells.clear();
             for _ in 0..self.size * self.size {
-                self.cells.push(Cell {
+                self.cells.push(Pixel {
                     red: 0,
                     green: 0,
                     blue: 0,
@@ -232,14 +232,13 @@ impl SnakeGame {
             self.current_food = food;
             self.finished = false;
         }
-
     }
 
     pub fn new(size: u32, provider: Box<dyn SnakeProvider>) -> SnakeGame {
         let mut cells = vec![];
 
         for _ in 0..size * size {
-            cells.push(Cell {
+            cells.push(Pixel {
                 red: 0,
                 green: 0,
                 blue: 0,
